@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>안식의 도시</title>
+
   <style>
     :root{
       --bg: #0b1020;
       --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.10);
+      --panel2: rgba(255,255,255,.09);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
       --line: rgba(255,255,255,.14);
@@ -16,9 +17,14 @@
       --shadow: 0 12px 40px rgba(0,0,0,.35);
       --radius: 16px;
       --radius2: 12px;
+
+      /* 반응형 스케일 */
+      --wrap: 1160px;     /* PC 최대 폭 */
+      --gap: 12px;        /* 기본 간격 */
+      --cell-min-h: 120px;
     }
 
-    *{ box-sizing: border-box; }
+    *{ box-sizing:border-box; }
     html,body{ height:100%; }
     body{
       margin:0;
@@ -29,63 +35,77 @@
         radial-gradient(900px 500px at 100% 10%, rgba(199,148,255,.18), transparent 55%),
         radial-gradient(900px 700px at 40% 110%, rgba(120,255,214,.10), transparent 55%),
         var(--bg);
+      overflow-x: hidden;
     }
 
+    /* 컨테이너 */
     .wrap{
-      max-width: 1100px;
+      max-width: var(--wrap);
       margin: 0 auto;
-      padding: 28px 18px 90px;
+      padding: clamp(18px, 2.2vw, 28px) clamp(14px, 2vw, 18px) 90px;
     }
 
+    /* 헤더 (모바일에서도 깔끔하게 줄바꿈) */
     header{
       position: sticky;
       top: 0;
       z-index: 10;
-      padding: 16px 0 12px;
+      padding: 12px 0 10px;
       backdrop-filter: blur(10px);
       background: linear-gradient(to bottom, rgba(11,16,32,.92), rgba(11,16,32,.45));
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
     .header-inner{
-      max-width: 1100px;
+      max-width: var(--wrap);
       margin: 0 auto;
-      padding: 0 18px;
+      padding: 0 clamp(14px, 2vw, 18px);
       display:flex;
-      gap: 14px;
-      align-items:center;
+      gap: 12px;
+      align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap; /* ✅ 모바일에서 툴바가 아래로 내려가게 */
     }
-    .title{
+
+    .brand{
       display:flex;
       flex-direction: column;
       gap: 6px;
+      min-width: 220px;
+      flex: 1 1 280px;
     }
+
     h1{
       margin:0;
-      font-size: 22px;
+      font-size: clamp(18px, 2.2vw, 22px);
       letter-spacing: .2px;
+      line-height: 1.15;
     }
     .subtitle{
-      font-size: 13px;
+      font-size: clamp(12px, 1.4vw, 13px);
       color: var(--muted);
+      line-height: 1.35;
     }
 
     .toolbar{
       display:flex;
-      gap:10px;
+      gap: 10px;
       align-items:center;
-      flex-wrap: wrap;
       justify-content:flex-end;
+      flex-wrap: wrap;
+      flex: 1 1 360px;
     }
+
     .pill{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap: 10px;
       padding: 10px 12px;
       border-radius: 999px;
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
       box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      flex: 1 1 260px; /* ✅ 모바일에서도 검색창이 넓게 */
+      min-width: 240px;
     }
     .pill label{
       font-size: 12px;
@@ -94,13 +114,15 @@
       white-space: nowrap;
     }
     .pill input{
-      width: 210px;
+      width: 100%;
       background: transparent;
       border: 0;
       outline: none;
       color: var(--text);
       font-size: 13px;
+      min-width: 120px;
     }
+
     .btn{
       cursor:pointer;
       border: 1px solid rgba(255,255,255,.12);
@@ -111,6 +133,8 @@
       font-size: 12px;
       transition: transform .12s ease, background .12s ease, border-color .12s ease;
       user-select:none;
+      flex: 0 0 auto;
+      white-space: nowrap;
     }
     .btn:hover{
       transform: translateY(-1px);
@@ -118,13 +142,14 @@
       border-color: rgba(255,255,255,.18);
     }
 
-    main{ padding-top: 18px; }
+    main{ padding-top: 14px; }
 
+    /* TOC: 모바일/태블릿/PC 자동 컬럼 */
     .toc{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin: 14px 0 22px;
+      grid-template-columns: repeat(4, minmax(0, 1fr)); /* PC 기본 4 */
+      gap: var(--gap);
+      margin: 10px 0 20px;
     }
     .toc a{
       text-decoration:none;
@@ -139,16 +164,14 @@
       align-items:center;
       box-shadow: 0 10px 26px rgba(0,0,0,.18);
       transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      min-height: 56px;
     }
     .toc a:hover{
       transform: translateY(-2px);
       background: rgba(255,255,255,.08);
       border-color: rgba(134,183,255,.35);
     }
-    .toc .left{
-      display:flex; flex-direction:column; gap: 2px;
-      min-width:0;
-    }
+    .toc .left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
     .toc .code{
       font-weight: 700;
       color: rgba(134,183,255,.95);
@@ -162,12 +185,9 @@
       overflow:hidden;
       text-overflow: ellipsis;
     }
-    .toc .arrow{
-      color: rgba(255,255,255,.55);
-      font-size: 14px;
-      flex: 0 0 auto;
-    }
+    .toc .arrow{ color: rgba(255,255,255,.55); font-size: 14px; flex: 0 0 auto; }
 
+    /* 카드 */
     .card{
       background: var(--panel);
       border: 1px solid rgba(255,255,255,.10);
@@ -176,7 +196,6 @@
       overflow:hidden;
       margin: 12px 0 18px;
     }
-
     .card-head{
       display:flex;
       justify-content: space-between;
@@ -185,10 +204,12 @@
       padding: 16px 16px 10px;
       border-bottom: 1px solid rgba(255,255,255,.08);
       background: linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      flex-wrap: wrap; /* ✅ 모바일에서 meta 줄바꿈 */
     }
     .card-head h2{
       margin:0;
-      font-size: 16px;
+      font-size: clamp(14px, 1.8vw, 16px);
+      line-height: 1.2;
     }
     .meta{
       color: var(--muted);
@@ -196,9 +217,7 @@
       white-space: nowrap;
     }
 
-    details{
-      padding: 0 16px 16px;
-    }
+    details{ padding: 0 16px 16px; }
     summary{
       list-style: none;
       cursor: pointer;
@@ -214,20 +233,9 @@
       user-select:none;
     }
     summary::-webkit-details-marker{ display:none; }
-    .sum-left{
-      display:flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-    .sum-title{
-      font-size: 13px;
-      font-weight: 650;
-    }
-    .sum-sub{
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .sum-left{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+    .sum-title{ font-size: 13px; font-weight: 650; }
+    .sum-sub{ font-size: 12px; color: var(--muted); }
     .chev{
       font-size: 14px;
       color: rgba(255,255,255,.65);
@@ -236,6 +244,11 @@
     }
     details[open] .chev{ transform: rotate(90deg); }
 
+    /* ✅ 핵심: 이미지 그리드 반응형
+       - PC: 5열
+       - 태블릿: 4열
+       - 모바일: 2열
+       - 아주 작은 모바일: 1열 (선택) */
     .grid{
       display:grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -252,21 +265,18 @@
       overflow:hidden;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.04);
-      min-height: 120px;
+      min-height: var(--cell-min-h);
       display:flex;
       align-items:center;
       justify-content:center;
     }
-
     .cell img{
       width: 100%;
       height: 100%;
       object-fit: cover;
       display:block;
-      filter: saturate(1.05) contrast(1.02);
       transform: translateZ(0);
     }
-
     .badge{
       position:absolute;
       left: 8px;
@@ -279,7 +289,6 @@
       border-radius: 999px;
       backdrop-filter: blur(6px);
     }
-
     .empty{
       color: rgba(255,255,255,.45);
       font-size: 12px;
@@ -298,14 +307,31 @@
       background: rgba(255,255,255,.05);
     }
 
-    @media (max-width: 980px){
-      .toc{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .pill input{ width: 160px; }
+    /* ✅ 태블릿 */
+    @media (max-width: 1024px){
+      :root{ --cell-min-h: 132px; --gap: 10px; }
+      .toc{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .meta{ white-space: normal; }
     }
-    @media (max-width: 560px){
-      .toc{ grid-template-columns: 1fr; }
+
+    /* ✅ 모바일 */
+    @media (max-width: 640px){
+      :root{ --cell-min-h: 150px; }
+      .toc{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .cell{ min-height: 140px; }
+      summary{ padding: 12px 10px; }
+      details{ padding: 0 14px 14px; }
+      .card-head{ padding: 14px 14px 10px; }
+      .pill{ min-width: 100%; } /* 검색창 한 줄 꽉 */
+      .btn{ flex: 1 1 auto; text-align:center; } /* 버튼 두 개 나란히 */
+    }
+
+    /* ✅ 아주 작은 모바일 (선택): 1열로 */
+    @media (max-width: 380px){
+      .toc{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      :root{ --cell-min-h: 180px; }
     }
   </style>
 </head>
@@ -313,9 +339,9 @@
 <body>
   <header>
     <div class="header-inner">
-      <div class="title">
+      <div class="brand">
         <h1>안식의 도시</h1>
-        <div class="subtitle">A~O 캐릭터 이미지 시트 (외부 URL · 1.webp ~ 69.webp)</div>
+        <div class="subtitle">A~O 캐릭터 이미지 시트 (외부 URL · 기본 1~69 / 카미(F), 헬(O)은 70번째=99.webp)</div>
       </div>
 
       <div class="toolbar">
@@ -342,14 +368,13 @@
   </div>
 
   <script>
-    // 캐릭터 목록 (코드/이름)
     const characters = [
       { code: "A", name: "안젤라 로시" },
       { code: "B", name: "후지사와 린" },
       { code: "C", name: "강무연" },
       { code: "D", name: "루 샤오위" },
       { code: "E", name: "아야" },
-      { code: "F", name: "카미" },
+      { code: "F", name: "카미" },       // 70번째 = 99.webp
       { code: "G", name: "루나" },
       { code: "H", name: "이리스" },
       { code: "I", name: "사라 레비" },
@@ -358,10 +383,11 @@
       { code: "L", name: "레이브" },
       { code: "M", name: "쿠로" },
       { code: "N", name: "시로 우사기" },
-      { code: "O", name: "헬" },
+      { code: "O", name: "헬" },         // 70번째 = 99.webp
     ];
 
     const BASE = "https://itimg.kr/1023/EAD";
+    const special70 = new Set(["F", "O"]); // 카미/헬만 70번째=99.webp
 
     const tocEl = document.getElementById("toc");
     const cardsEl = document.getElementById("cards");
@@ -381,14 +407,33 @@
       return a;
     }
 
-    function makeCard({code, name}, index) {
+    function makeImageCell(code, name, label, fileNo) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.referrerPolicy = "no-referrer";
+      img.alt = `${code} ${name} ${label}`;
+      img.src = `${BASE}/${code}/${fileNo}.webp`;
+
+      const badge = document.createElement("div");
+      badge.className = "badge";
+      badge.textContent = `${label}`;
+
+      cell.appendChild(img);
+      cell.appendChild(badge);
+      return cell;
+    }
+
+    function makeCard({code, name}) {
       const card = document.createElement("article");
       card.className = "card";
       card.id = `char-${code}`;
       card.dataset.code = code.toLowerCase();
       card.dataset.name = name.toLowerCase();
 
-      // details/summary (토글)
       const details = document.createElement("details");
       details.dataset.details = "1";
 
@@ -396,43 +441,28 @@
       summary.innerHTML = `
         <div class="sum-left">
           <div class="sum-title">이미지 시트</div>
-          <div class="sum-sub">5열 × 14행 (총 70칸 중 69개 이미지)</div>
+          <div class="sum-sub">반응형 그리드 (PC/태블릿/모바일 자동)</div>
         </div>
         <div class="chev">›</div>
       `;
 
-      // grid
       const grid = document.createElement("div");
       grid.className = "grid";
 
-      // 1~69 이미지 + 마지막 70번째 칸은 비워둠
-      for (let i = 1; i <= 70; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
+      // 1~69 항상 존재
+      for (let i = 1; i <= 69; i++) grid.appendChild(makeImageCell(code, name, i, i));
 
-        if (i <= 69) {
-          const url = `${BASE}/${code}/${i}.webp`;
-          const img = document.createElement("img");
-          img.loading = "lazy";
-          img.decoding = "async";
-          img.referrerPolicy = "no-referrer";
-          img.alt = `${code} ${name} ${i}`;
-          img.src = url;
-
-          const badge = document.createElement("div");
-          badge.className = "badge";
-          badge.textContent = `${i}`;
-
-          cell.appendChild(img);
-          cell.appendChild(badge);
-        } else {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.textContent = "빈 칸";
-          cell.appendChild(empty);
-        }
-
-        grid.appendChild(cell);
+      // 70번째: 기본 빈 칸 / F,O는 99.webp
+      if (special70.has(code)) {
+        grid.appendChild(makeImageCell(code, name, 70, 99));
+      } else {
+        const emptyCell = document.createElement("div");
+        emptyCell.className = "cell";
+        const t = document.createElement("div");
+        t.className = "empty";
+        t.textContent = "빈 칸";
+        emptyCell.appendChild(t);
+        grid.appendChild(emptyCell);
       }
 
       details.appendChild(summary);
@@ -441,18 +471,17 @@
       card.innerHTML = `
         <div class="card-head">
           <h2>${code}.${name}</h2>
-          <div class="meta">CODE: ${code} · IMG: 1~69</div>
+          <div class="meta">IMG: 1~69${special70.has(code) ? " + (70=99.webp)" : ""}</div>
         </div>
       `;
       card.appendChild(details);
-
       return card;
     }
 
     // 렌더
-    characters.forEach((c, idx) => {
+    characters.forEach(c => {
       tocEl.appendChild(makeTOCItem(c));
-      cardsEl.appendChild(makeCard(c, idx));
+      cardsEl.appendChild(makeCard(c));
     });
 
     // 검색 필터
@@ -463,33 +492,25 @@
       const tocItems = [...tocEl.querySelectorAll("a")];
 
       cards.forEach(card => {
-        const hit = !term
-          || card.dataset.code.includes(term)
-          || card.dataset.name.includes(term);
+        const hit = !term || card.dataset.code.includes(term) || card.dataset.name.includes(term);
         card.style.display = hit ? "" : "none";
       });
 
       tocItems.forEach(a => {
-        const hit = !term
-          || a.dataset.code.toLowerCase().includes(term)
-          || a.dataset.name.toLowerCase().includes(term);
+        const hit = !term || a.dataset.code.toLowerCase().includes(term) || a.dataset.name.toLowerCase().includes(term);
         a.style.display = hit ? "" : "none";
       });
     });
 
     // 모두 펼치기/접기
-    const openAll = document.getElementById("openAll");
-    const closeAll = document.getElementById("closeAll");
-
-    openAll.addEventListener("click", () => {
+    document.getElementById("openAll").addEventListener("click", () => {
       document.querySelectorAll('details[data-details="1"]').forEach(d => d.open = true);
     });
-
-    closeAll.addEventListener("click", () => {
+    document.getElementById("closeAll").addEventListener("click", () => {
       document.querySelectorAll('details[data-details="1"]').forEach(d => d.open = false);
     });
 
-    // URL 해시로 들어왔을 때 해당 섹션 자동 펼치기
+    // 해시로 들어왔을 때 자동 펼치기
     window.addEventListener("DOMContentLoaded", () => {
       const hash = location.hash;
       if (!hash) return;
