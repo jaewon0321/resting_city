@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>안식의 도시</title>
+  <style>
+    :root{
+      --bg: #0b1020;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --line: rgba(255,255,255,.14);
+      --accent: #86b7ff;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius: 16px;
+      --radius2: 12px;
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(134,183,255,.22), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(199,148,255,.18), transparent 55%),
+        radial-gradient(900px 700px at 40% 110%, rgba(120,255,214,.10), transparent 55%),
+        var(--bg);
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 90px;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 16px 0 12px;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,16,32,.92), rgba(11,16,32,.45));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .header-inner{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 18px;
+      display:flex;
+      gap: 14px;
+      align-items:center;
+      justify-content: space-between;
+    }
+    .title{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing: .2px;
+    }
+    .subtitle{
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    }
+    .pill label{
+      font-size: 12px;
+      color: var(--muted);
+      user-select:none;
+      white-space: nowrap;
+    }
+    .pill input{
+      width: 210px;
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .btn{
+      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.09);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    main{ padding-top: 18px; }
+
+    .toc{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0 22px;
+    }
+    .toc a{
+      text-decoration:none;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 12px 12px;
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items:center;
+      box-shadow: 0 10px 26px rgba(0,0,0,.18);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .toc a:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(134,183,255,.35);
+    }
+    .toc .left{
+      display:flex; flex-direction:column; gap: 2px;
+      min-width:0;
+    }
+    .toc .code{
+      font-weight: 700;
+      color: rgba(134,183,255,.95);
+      font-size: 12px;
+      letter-spacing: .4px;
+    }
+    .toc .name{
+      font-size: 13px;
+      color: rgba(255,255,255,.92);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toc .arrow{
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+
+    .card{
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin: 12px 0 18px;
+    }
+
+    .card-head{
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    }
+    .card-head h2{
+      margin:0;
+      font-size: 16px;
+    }
+    .meta{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    details{
+      padding: 0 16px 16px;
+    }
+    summary{
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 12px;
+      margin: 12px 0 10px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      user-select:none;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    .sum-left{
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .sum-title{
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .sum-sub{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .chev{
+      font-size: 14px;
+      color: rgba(255,255,255,.65);
+      transition: transform .15s ease;
+      flex: 0 0 auto;
+    }
+    details[open] .chev{ transform: rotate(90deg); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius2);
+    }
+
+    .cell{
+      position: relative;
+      border-radius: 12px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      min-height: 120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .cell img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+      filter: saturate(1.05) contrast(1.02);
+      transform: translateZ(0);
+    }
+
+    .badge{
+      position:absolute;
+      left: 8px;
+      top: 8px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,.9);
+      background: rgba(0,0,0,.40);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+    }
+
+    .empty{
+      color: rgba(255,255,255,.45);
+      font-size: 12px;
+      text-align:center;
+      padding: 10px;
+    }
+
+    .footer-note{
+      margin-top: 22px;
+      color: rgba(255,255,255,.60);
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+    }
+
+    @media (max-width: 980px){
+      .toc{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .pill input{ width: 160px; }
+    }
+    @media (max-width: 560px){
+      .toc{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cell{ min-height: 140px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="title">
+        <h1>안식의 도시</h1>
+        <div class="subtitle">A~O 캐릭터 이미지 시트 (외부 URL · 1.webp ~ 69.webp)</div>
+      </div>
+
+      <div class="toolbar">
+        <div class="pill">
+          <label for="q">검색</label>
+          <input id="q" type="search" placeholder="이름/코드로 필터…" autocomplete="off" />
+        </div>
+        <button class="btn" id="openAll" type="button">모두 펼치기</button>
+        <button class="btn" id="closeAll" type="button">모두 접기</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <main>
+      <section class="toc" id="toc"></section>
+      <section id="cards"></section>
+
+      <div class="footer-note">
+        • 이미지는 모두 외부 링크(https://itimg.kr/...)를 그대로 사용합니다.<br/>
+        • 네트워크 상황에 따라 로딩이 느릴 수 있어 <b>lazy loading</b>이 적용되어 있습니다.
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // 캐릭터 목록 (코드/이름)
+    const characters = [
+      { code: "A", name: "안젤라 로시" },
+      { code: "B", name: "후지사와 린" },
+      { code: "C", name: "강무연" },
+      { code: "D", name: "루 샤오위" },
+      { code: "E", name: "아야" },
+      { code: "F", name: "카미" },
+      { code: "G", name: "루나" },
+      { code: "H", name: "이리스" },
+      { code: "I", name: "사라 레비" },
+      { code: "J", name: "미즈키 아오" },
+      { code: "K", name: "엘리나" },
+      { code: "L", name: "레이브" },
+      { code: "M", name: "쿠로" },
+      { code: "N", name: "시로 우사기" },
+      { code: "O", name: "헬" },
+    ];
+
+    const BASE = "https://itimg.kr/1023/EAD";
+
+    const tocEl = document.getElementById("toc");
+    const cardsEl = document.getElementById("cards");
+
+    function makeTOCItem({code, name}) {
+      const a = document.createElement("a");
+      a.href = `#char-${code}`;
+      a.dataset.code = code;
+      a.dataset.name = name;
+      a.innerHTML = `
+        <div class="left">
+          <div class="code">${code}</div>
+          <div class="name">${name}</div>
+        </div>
+        <div class="arrow">›</div>
+      `;
+      return a;
+    }
+
+    function makeCard({code, name}, index) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.id = `char-${code}`;
+      card.dataset.code = code.toLowerCase();
+      card.dataset.name = name.toLowerCase();
+
+      // details/summary (토글)
+      const details = document.createElement("details");
+      details.dataset.details = "1";
+
+      const summary = document.createElement("summary");
+      summary.innerHTML = `
+        <div class="sum-left">
+          <div class="sum-title">이미지 시트</div>
+          <div class="sum-sub">5열 × 14행 (총 70칸 중 69개 이미지)</div>
+        </div>
+        <div class="chev">›</div>
+      `;
+
+      // grid
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      // 1~69 이미지 + 마지막 70번째 칸은 비워둠
+      for (let i = 1; i <= 70; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+
+        if (i <= 69) {
+          const url = `${BASE}/${code}/${i}.webp`;
+          const img = document.createElement("img");
+          img.loading = "lazy";
+          img.decoding = "async";
+          img.referrerPolicy = "no-referrer";
+          img.alt = `${code} ${name} ${i}`;
+          img.src = url;
+
+          const badge = document.createElement("div");
+          badge.className = "badge";
+          badge.textContent = `${i}`;
+
+          cell.appendChild(img);
+          cell.appendChild(badge);
+        } else {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "빈 칸";
+          cell.appendChild(empty);
+        }
+
+        grid.appendChild(cell);
+      }
+
+      details.appendChild(summary);
+      details.appendChild(grid);
+
+      card.innerHTML = `
+        <div class="card-head">
+          <h2>${code}.${name}</h2>
+          <div class="meta">CODE: ${code} · IMG: 1~69</div>
+        </div>
+      `;
+      card.appendChild(details);
+
+      return card;
+    }
+
+    // 렌더
+    characters.forEach((c, idx) => {
+      tocEl.appendChild(makeTOCItem(c));
+      cardsEl.appendChild(makeCard(c, idx));
+    });
+
+    // 검색 필터
+    const q = document.getElementById("q");
+    q.addEventListener("input", () => {
+      const term = q.value.trim().toLowerCase();
+      const cards = [...cardsEl.querySelectorAll(".card")];
+      const tocItems = [...tocEl.querySelectorAll("a")];
+
+      cards.forEach(card => {
+        const hit = !term
+          || card.dataset.code.includes(term)
+          || card.dataset.name.includes(term);
+        card.style.display = hit ? "" : "none";
+      });
+
+      tocItems.forEach(a => {
+        const hit = !term
+          || a.dataset.code.toLowerCase().includes(term)
+          || a.dataset.name.toLowerCase().includes(term);
+        a.style.display = hit ? "" : "none";
+      });
+    });
+
+    // 모두 펼치기/접기
+    const openAll = document.getElementById("openAll");
+    const closeAll = document.getElementById("closeAll");
+
+    openAll.addEventListener("click", () => {
+      document.querySelectorAll('details[data-details="1"]').forEach(d => d.open = true);
+    });
+
+    closeAll.addEventListener("click", () => {
+      document.querySelectorAll('details[data-details="1"]').forEach(d => d.open = false);
+    });
+
+    // URL 해시로 들어왔을 때 해당 섹션 자동 펼치기
+    window.addEventListener("DOMContentLoaded", () => {
+      const hash = location.hash;
+      if (!hash) return;
+      const target = document.querySelector(hash);
+      if (!target) return;
+      const det = target.querySelector('details[data-details="1"]');
+      if (det) det.open = true;
+    });
+  </script>
+</body>
+</html>
