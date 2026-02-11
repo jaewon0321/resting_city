@@ -422,54 +422,48 @@
     }
 
     function makeCard({code, name}) {
-      const card = document.createElement("article");
-      card.className = "card";
-      card.id = `char-${code}`;
-      card.dataset.code = code.toLowerCase();
-      card.dataset.name = name.toLowerCase();
+  const card = document.createElement("article");
+  card.className = "card";
+  card.id = `char-${code}`;
+  card.dataset.code = code.toLowerCase();
+  card.dataset.name = name.toLowerCase();
 
-      const details = document.createElement("details");
-      details.dataset.details = "1";
+  const details = document.createElement("details");
+  details.dataset.details = "1";
 
-      const summary = document.createElement("summary");
-      summary.innerHTML = `
-        <div class="sum-left">
-          <div class="sum-title">이미지 시트</div>
-        </div>
-        <div class="chev">›</div>
-      `;
+  const summary = document.createElement("summary");
+  summary.innerHTML = `
+    <div class="sum-left">
+      <div class="sum-title">이미지 시트</div>
+    </div>
+    <div class="chev">›</div>
+  `;
 
-      const grid = document.createElement("div");
-      grid.className = "grid";
+  const grid = document.createElement("div");
+  grid.className = "grid";
 
-      // 1~69 항상 존재
-      for (let i = 1; i <= 69; i++) grid.appendChild(makeImageCell(code, name, i, i));
+  // ✅ 1~70.webp 출력
+  for (let i = 1; i <= 70; i++) {
+    grid.appendChild(makeImageCell(code, name, i, i));
+  }
 
-      // 70번째: 기본 빈 칸 / F,O는 99.webp
-      if (special70.has(code)) {
-        grid.appendChild(makeImageCell(code, name, 70, 99));
-      } else {
-        const emptyCell = document.createElement("div");
-        emptyCell.className = "cell";
-        const t = document.createElement("div");
-        t.className = "empty";
-        t.textContent = "빈 칸";
-        emptyCell.appendChild(t);
-        grid.appendChild(emptyCell);
-      }
+  // ✅ 71번째 칸에 99.webp (카미/헬만)
+  if (special70.has(code)) {
+    grid.appendChild(makeImageCell(code, name, 71, 99));
+  }
 
-      details.appendChild(summary);
-      details.appendChild(grid);
+  details.appendChild(summary);
+  details.appendChild(grid);
 
-      card.innerHTML = `
-        <div class="card-head">
-          <h2>${code}.${name}</h2>
-          <div class="meta">IMG: 1~69${special70.has(code) ? " + (70=99.webp)" : ""}</div>
-        </div>
-      `;
-      card.appendChild(details);
-      return card;
-    }
+  card.innerHTML = `
+    <div class="card-head">
+      <h2>${code}.${name}</h2>
+      <div class="meta">IMG: 1~70${special70.has(code) ? " + (71=99.webp)" : ""}</div>
+    </div>
+  `;
+  card.appendChild(details);
+  return card;
+}
 
     // 렌더
     characters.forEach(c => {
@@ -515,3 +509,4 @@
   </script>
 </body>
 </html>
+
